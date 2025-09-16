@@ -1,5 +1,5 @@
 const API_URL =
-  'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLgOBXDvnu7qLY88z22P3W3x2d9EieIsBcx5hQihk5a7j1cenYJgDbP-7PQOFV9nC7X0ex6n34ssEQLnuApVc8Kt_TM9sRZEUWXxrn4qKIx7_XlUGJQfB-WmnYy_8oLlOwsnMrrbT6hZxTSVm8YWYvw9SWyA_bkxjWZy0z_N_e9JuFm-i_kxEfFKK8figoWdK0yt7Go9rVKug9CyfutNEViIW7LzLqrTgM3RaC8E-7qZdUXTVkrTIhFt7Y2TwA&lib=Me_TdFWiyl3TASNz2Bx8Jo7Bo4TGvA1H8';
+  'https://script.google.com/macros/s/AKfycbx-DEPx8finapW5dhxj68t70tajs-hk3tvWKcxzPX4/dev';
 
 const statusElement = document.querySelector('[data-status]');
 const tableBody = document.querySelector('#rankings tbody');
