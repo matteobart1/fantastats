@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fantastats – Albo d'oro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="container">
+        <h1>Fantastats</h1>
+        <p class="subtitle">Albo d'oro del nostro fantacalcio</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <header class="card__header">
+          <h2>Classifiche recenti</h2>
+          <p id="status" data-status class="status">Caricamento in corso…</p>
+        </header>
+
+        <div class="table-wrapper">
+          <table id="rankings" aria-describedby="status">
+            <thead>
+              <tr>
+                <th scope="col">Stagione</th>
+                <th scope="col">Posizione</th>
+                <th scope="col">Allenatore</th>
+                <th scope="col">Squadra</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="container">
+        <p>
+          Dati aggiornati dal foglio Google condiviso tra i partecipanti.
+          <span id="updated-at" hidden>Ultimo aggiornamento: <time></time></span>
+        </p>
+      </div>
+    </footer>
+
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
