@@ -59,6 +59,12 @@ body {
   border: 1px solid var(--border);
 }
 
+.card--hero {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 2px solid rgba(37, 99, 235, 0.15);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
 .card__header {
   display: flex;
   justify-content: space-between;
@@ -76,6 +82,108 @@ body {
   margin: 0;
   font-size: 0.95rem;
   color: var(--muted);
+}
+
+.podium {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.podium-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.podium-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.podium-item--gold {
+  border-color: rgba(255, 193, 7, 0.3);
+  background: linear-gradient(135deg, #fff9e6, #ffffff);
+}
+
+.podium-item--silver {
+  border-color: rgba(108, 117, 125, 0.3);
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+}
+
+.podium-item--bronze {
+  border-color: rgba(205, 127, 50, 0.3);
+  background: linear-gradient(135deg, #fdf6e3, #ffffff);
+}
+
+.podium-badge {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.podium-position {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.podium-position--gold {
+  color: #b8860b;
+}
+
+.podium-position--silver {
+  color: #6c757d;
+}
+
+.podium-position--bronze {
+  color: #cd7f32;
+}
+
+.podium-coach {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.podium-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.podium-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.podium-stat-value {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.podium-stat-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .table-wrapper {
@@ -150,6 +258,24 @@ td:first-child {
 @media (max-width: 640px) {
   .card {
     padding: 1.25rem;
+  }
+
+  .podium {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .podium-item {
+    padding: 1.5rem 1rem;
+  }
+
+  .podium-badge {
+    width: 60px;
+    height: 60px;
+  }
+
+  .podium-stats {
+    gap: 0.75rem;
   }
 
   thead {
