@@ -9,12 +9,39 @@ const updatedAtTime = updatedAtContainer?.querySelector('time');
 const KEY_MAP = {
   season: ['Stagione', 'Season', 'Anno', 'Year'],
   position: ['Posizione', 'Placement', 'Position', 'Rank'],
-  coach: ['Allenatore', 'Manager', 'Coach'],
+  coach: ['Allenatore', 'Allenatore 1', 'Manager', 'Coach'],
   team: ['Squadra', 'Team', 'Club'],
 };
 
+function normalizeKeyName(key) {
+  return key.toLowerCase().replace(/\s+/g, '');
+}
+
 function resolveKey(record, candidates) {
-  return candidates.find((key) => Object.prototype.hasOwnProperty.call(record, key));
+  const entries = Object.entries(record);
+  const normalizedMap = entries.reduce((acc, [originalKey]) => {
+    acc[normalizeKeyName(originalKey)] = originalKey;
+    return acc;
+  }, {});
+
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeKeyName(candidate);
+    if (normalizedMap[normalizedCandidate]) {
+      return normalizedMap[normalizedCandidate];
+    }
+  }
+
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeKeyName(candidate);
+    const partialMatch = entries.find(([originalKey]) =>
+      normalizeKeyName(originalKey).startsWith(normalizedCandidate)
+    );
+    if (partialMatch) {
+      return partialMatch[0];
+    }
+  }
+
+  return undefined;
 }
 
 function normalizeValue(value) {
