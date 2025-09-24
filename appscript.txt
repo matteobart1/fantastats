@@ -1,0 +1,27 @@
+function doGet() {
+  const sheet = SpreadsheetApp.getActive().getSheetByName('dati_podio');
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'Foglio "dati_podio" non trovato.' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const data = sheet.getDataRange().getValues();
+  if (!data.length) {
+    return ContentService.createTextOutput('[]').setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const headers = data.shift();
+  const rows = data
+    .filter(row => row[0] !== '')
+    .map(row =>
+      headers.reduce((acc, header, i) => {
+        acc[header] = row[i];
+        return acc;
+      }, {})
+    );
+
+  return ContentService
+    .createTextOutput(JSON.stringify(rows))
+    .setMimeType(ContentService.MimeType.JSON);
+}
