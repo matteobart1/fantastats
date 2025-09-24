@@ -1,5 +1,5 @@
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbx-DEPx8finapW5dhxj68t70tajs-hk3tvWKcxzPX4/dev';
+  'https://script.google.com/macros/s/AKfycbzuDy-H0CMkaET-DgVVSRkDTDnJhTQPIhXoLhYSMJaxAqxYTHZ9DezAF-ltoRdC7M6x/exec';
 
 const statusElement = document.querySelector('[data-status]');
 const tableBody = document.querySelector('#rankings tbody');
