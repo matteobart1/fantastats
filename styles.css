@@ -147,6 +147,7 @@ body {
 .badge-content {
   position: absolute;
   left: 50%;
+
   bottom: 21%;
   transform: translateX(-50%);
   width: 78%;

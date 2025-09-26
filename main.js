@@ -296,6 +296,7 @@ async function loadRankings() {
 
     // Calcola e mostra la classifica medaglie
     const medalsRanking = calculateMedals(payload, keyNames);
+
     const medalsRankingWithImages = medalsRanking.map((entry) => {
       const normalizedName = normalizeCoachName(entry.coach);
       const image = normalizedName ? coachImages.get(normalizedName) ?? null : null;
