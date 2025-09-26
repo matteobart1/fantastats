@@ -36,6 +36,18 @@ function normalizeValue(value) {
   return value;
 }
 
+function normalizeCoachName(value) {
+  const normalized = normalizeValue(value);
+  if (!normalized) return '';
+
+  return normalized
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildPositionBadge(positionRaw) {
   const position = normalizeValue(positionRaw);
   if (!position && position !== 0) {
@@ -229,12 +241,19 @@ async function loadCoachImages() {
     const response = await fetch(`${API_URL}?action=images`);
     if (!response.ok) {
       console.warn('Impossibile caricare le immagini dei coach');
-      return {};
+      return new Map();
     }
-    return await response.json();
+    const data = await response.json();
+    return Object.entries(data ?? {}).reduce((map, [name, url]) => {
+      const key = normalizeCoachName(name);
+      if (key) {
+        map.set(key, url);
+      }
+      return map;
+    }, new Map());
   } catch (error) {
     console.warn('Errore nel caricamento delle immagini:', error);
-    return {};
+    return new Map();
   }
 }
 
@@ -277,10 +296,15 @@ async function loadRankings() {
 
     // Calcola e mostra la classifica medaglie
     const medalsRanking = calculateMedals(payload, keyNames);
-    const medalsRankingWithImages = medalsRanking.map((entry) => ({
-      ...entry,
-      image: coachImages?.[entry.coach] ?? null,
-    }));
+
+    const medalsRankingWithImages = medalsRanking.map((entry) => {
+      const normalizedName = normalizeCoachName(entry.coach);
+      const image = normalizedName ? coachImages.get(normalizedName) ?? null : null;
+      return {
+        ...entry,
+        image,
+      };
+    });
 
     renderMedalsPodium(medalsRankingWithImages);
     medalsStatusElement.textContent = `Classifica aggiornata: ${medalsRanking.length} allenatori`;
