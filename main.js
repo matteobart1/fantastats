@@ -16,10 +16,10 @@ const KEY_MAP = {
 };
 
 const MEDAL_BADGES = {
-  gold: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758750150/gold_badge_v2_chb8gn.png',
-  silver: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758750150/silver_badge_drmkas.png',
-  bronze: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758750150/bronze_badge_yuhbvz.png',
-  white: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758752107/badge_white_a9g3mq.png',
+  gold: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758922471/gold_badge_v2_Background_Removed_olh442.png',
+  silver: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758922470/silver_badge_Background_Removed_baz4ne.png',
+  bronze: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758922471/bronze_badge_Background_Removed_jkmeq6.png',
+  white: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758922470/badge_white_Background_Removed_xuaj3b.png',
 };
 
 function resolveKey(record, candidates) {
@@ -159,10 +159,7 @@ function renderMedalsPodium(topCoaches) {
     const coach = topCoaches[index];
     if (!coach) return;
 
-    const item = document.createElement('div');
-    item.className = `podium-item ${itemClass}`;
-
-    // Card del badge completo + overlay foto coach + contenuto
+    // Solo il badge, senza contenitore esterno
     const card = document.createElement('div');
     card.className = 'podium-card';
 
@@ -171,6 +168,7 @@ function renderMedalsPodium(topCoaches) {
     badgeBg.src = MEDAL_BADGES[type];
     badgeBg.alt = `Badge ${label}`;
 
+    // Foto allenatore nella parte alta del badge
     const coachImg = document.createElement('img');
     coachImg.className = 'coach-photo';
     if (coach.image) {
@@ -180,7 +178,7 @@ function renderMedalsPodium(topCoaches) {
       coachImg.style.display = 'none';
     }
 
-    // Contenuto sovrapposto sul badge
+    // Nome e statistiche nella parte bassa del badge
     const badgeContent = document.createElement('div');
     badgeContent.className = 'badge-content';
 
@@ -222,9 +220,22 @@ function renderMedalsPodium(topCoaches) {
     stats.append(goldStat, silverStat, bronzeStat, totalStat);
     badgeContent.append(coachName, stats);
     card.append(badgeBg, coachImg, badgeContent);
-    item.append(card);
-    medalsPodium.append(item);
+    medalsPodium.append(card);
   });
+}
+
+async function loadCoachImages() {
+  try {
+    const response = await fetch(`${API_URL}?action=images`);
+    if (!response.ok) {
+      console.warn('Impossibile caricare le immagini dei coach');
+      return {};
+    }
+    return await response.json();
+  } catch (error) {
+    console.warn('Errore nel caricamento delle immagini:', error);
+    return {};
+  }
 }
 
 async function loadRankings() {
@@ -232,12 +243,17 @@ async function loadRankings() {
     statusElement.textContent = 'Caricamento in corso…';
     medalsStatusElement.textContent = 'Caricamento in corso…';
     
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error(`Richiesta fallita (${response.status})`);
+    // Carica i dati del podio e le immagini in parallelo
+    const [podioResponse, coachImages] = await Promise.all([
+      fetch(API_URL),
+      loadCoachImages()
+    ]);
+
+    if (!podioResponse.ok) {
+      throw new Error(`Richiesta fallita (${podioResponse.status})`);
     }
 
-    const payload = await response.json();
+    const payload = await podioResponse.json();
     if (!Array.isArray(payload) || payload.length === 0) {
       statusElement.textContent = 'Nessun dato disponibile al momento.';
       medalsStatusElement.textContent = 'Nessun dato disponibile al momento.';
