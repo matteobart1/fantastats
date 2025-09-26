@@ -16,9 +16,10 @@ const KEY_MAP = {
 };
 
 const MEDAL_BADGES = {
-  gold: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758752144/gold_badge_v2_Large_kbz3h4.jpg',
-  silver: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758752145/silver_badge_Large_ei0nyu.jpg',
-  bronze: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758752145/bronze_badge_Large_fbr6un.jpg',
+  gold: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758750150/gold_badge_v2_chb8gn.png',
+  silver: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758750150/silver_badge_drmkas.png',
+  bronze: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758750150/bronze_badge_yuhbvz.png',
+  white: 'https://res.cloudinary.com/dp44j757l/image/upload/v1758752107/badge_white_a9g3mq.png',
 };
 
 function resolveKey(record, candidates) {
