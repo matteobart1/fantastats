@@ -161,10 +161,24 @@ function renderMedalsPodium(topCoaches) {
     const item = document.createElement('div');
     item.className = `podium-item ${itemClass}`;
 
-    const badge = document.createElement('img');
-    badge.className = 'podium-badge';
-    badge.src = MEDAL_BADGES[type];
-    badge.alt = `Badge ${label}`;
+    // Card del badge completo + overlay foto coach
+    const card = document.createElement('div');
+    card.className = 'podium-card';
+
+    const badgeBg = document.createElement('img');
+    badgeBg.className = 'badge-bg';
+    badgeBg.src = MEDAL_BADGES[type];
+    badgeBg.alt = `Badge ${label}`;
+
+    const coachImg = document.createElement('img');
+    coachImg.className = 'coach-photo';
+    if (coach.image) {
+      coachImg.src = coach.image;
+      coachImg.alt = `Foto di ${coach.coach}`;
+    } else {
+      coachImg.style.display = 'none';
+    }
+    card.append(badgeBg, coachImg);
 
     const position = document.createElement('div');
     position.className = `podium-position podium-position--${type}`;
@@ -206,7 +220,7 @@ function renderMedalsPodium(topCoaches) {
     `;
 
     stats.append(goldStat, silverStat, bronzeStat, totalStat);
-    item.append(badge, position, coachName, stats);
+    item.append(card, position, coachName, stats);
     medalsPodium.append(item);
   });
 }

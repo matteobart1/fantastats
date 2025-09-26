@@ -124,13 +124,33 @@ body {
   background: linear-gradient(135deg, #fdf6e3, #ffffff);
 }
 
-.podium-badge {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 1rem;
+/* Card del badge con foto allenatore sovrapposta */
+.podium-card {
+  position: relative;
+  width: 240px;
+  max-width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.badge-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.coach-photo {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  width: 52%;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
+  overflow: hidden;
   object-fit: cover;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 6px 14px rgba(0, 0, 0, 0.18);
 }
 
 .podium-position {
@@ -269,9 +289,8 @@ td:first-child {
     padding: 1.5rem 1rem;
   }
 
-  .podium-badge {
-    width: 60px;
-    height: 60px;
+  .podium-card {
+    width: 200px;
   }
 
   .podium-stats {
