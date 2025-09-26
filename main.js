@@ -161,7 +161,7 @@ function renderMedalsPodium(topCoaches) {
     const item = document.createElement('div');
     item.className = `podium-item ${itemClass}`;
 
-    // Card del badge completo + overlay foto coach
+    // Card del badge completo + overlay foto coach + contenuto
     const card = document.createElement('div');
     card.className = 'podium-card';
 
@@ -178,49 +178,50 @@ function renderMedalsPodium(topCoaches) {
     } else {
       coachImg.style.display = 'none';
     }
-    card.append(badgeBg, coachImg);
 
-    const position = document.createElement('div');
-    position.className = `podium-position podium-position--${type}`;
-    position.textContent = label;
+    // Contenuto sovrapposto sul badge
+    const badgeContent = document.createElement('div');
+    badgeContent.className = 'badge-content';
 
     const coachName = document.createElement('div');
-    coachName.className = 'podium-coach';
+    coachName.className = 'badge-coach-name';
     coachName.textContent = coach.coach;
 
     const stats = document.createElement('div');
-    stats.className = 'podium-stats';
+    stats.className = 'badge-stats';
 
     const goldStat = document.createElement('div');
-    goldStat.className = 'podium-stat';
+    goldStat.className = 'badge-stat';
     goldStat.innerHTML = `
-      <div class="podium-stat-value">${coach.gold}</div>
-      <div class="podium-stat-label">Oro</div>
+      <div class="badge-stat-value">${coach.gold}</div>
+      <div>ORO</div>
     `;
 
     const silverStat = document.createElement('div');
-    silverStat.className = 'podium-stat';
+    silverStat.className = 'badge-stat';
     silverStat.innerHTML = `
-      <div class="podium-stat-value">${coach.silver}</div>
-      <div class="podium-stat-label">Argento</div>
+      <div class="badge-stat-value">${coach.silver}</div>
+      <div>ARG</div>
     `;
 
     const bronzeStat = document.createElement('div');
-    bronzeStat.className = 'podium-stat';
+    bronzeStat.className = 'badge-stat';
     bronzeStat.innerHTML = `
-      <div class="podium-stat-value">${coach.bronze}</div>
-      <div class="podium-stat-label">Bronzo</div>
+      <div class="badge-stat-value">${coach.bronze}</div>
+      <div>BRON</div>
     `;
 
     const totalStat = document.createElement('div');
-    totalStat.className = 'podium-stat';
+    totalStat.className = 'badge-stat';
     totalStat.innerHTML = `
-      <div class="podium-stat-value">${coach.total}</div>
-      <div class="podium-stat-label">Totale</div>
+      <div class="badge-stat-value">${coach.total}</div>
+      <div>TOT</div>
     `;
 
     stats.append(goldStat, silverStat, bronzeStat, totalStat);
-    item.append(card, position, coachName, stats);
+    badgeContent.append(coachName, stats);
+    card.append(badgeBg, coachImg, badgeContent);
+    item.append(card);
     medalsPodium.append(item);
   });
 }
