@@ -36,6 +36,18 @@ function normalizeValue(value) {
   return value;
 }
 
+function normalizeCoachName(value) {
+  const normalized = normalizeValue(value);
+  if (!normalized) return '';
+
+  return normalized
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildPositionBadge(positionRaw) {
   const position = normalizeValue(positionRaw);
   if (!position && position !== 0) {
@@ -193,28 +205,28 @@ function renderMedalsPodium(topCoaches) {
     goldStat.className = 'badge-stat';
     goldStat.innerHTML = `
       <div class="badge-stat-value">${coach.gold}</div>
-      <div>ORO</div>
+      <div class="badge-stat-label">ORO</div>
     `;
 
     const silverStat = document.createElement('div');
     silverStat.className = 'badge-stat';
     silverStat.innerHTML = `
       <div class="badge-stat-value">${coach.silver}</div>
-      <div>ARG</div>
+      <div class="badge-stat-label">ARG</div>
     `;
 
     const bronzeStat = document.createElement('div');
     bronzeStat.className = 'badge-stat';
     bronzeStat.innerHTML = `
       <div class="badge-stat-value">${coach.bronze}</div>
-      <div>BRON</div>
+      <div class="badge-stat-label">BRON</div>
     `;
 
     const totalStat = document.createElement('div');
     totalStat.className = 'badge-stat';
     totalStat.innerHTML = `
       <div class="badge-stat-value">${coach.total}</div>
-      <div>TOT</div>
+      <div class="badge-stat-label">TOT</div>
     `;
 
     stats.append(goldStat, silverStat, bronzeStat, totalStat);
@@ -229,12 +241,19 @@ async function loadCoachImages() {
     const response = await fetch(`${API_URL}?action=images`);
     if (!response.ok) {
       console.warn('Impossibile caricare le immagini dei coach');
-      return {};
+      return new Map();
     }
-    return await response.json();
+    const data = await response.json();
+    return Object.entries(data ?? {}).reduce((map, [name, url]) => {
+      const key = normalizeCoachName(name);
+      if (key) {
+        map.set(key, url);
+      }
+      return map;
+    }, new Map());
   } catch (error) {
     console.warn('Errore nel caricamento delle immagini:', error);
-    return {};
+    return new Map();
   }
 }
 
@@ -277,7 +296,16 @@ async function loadRankings() {
 
     // Calcola e mostra la classifica medaglie
     const medalsRanking = calculateMedals(payload, keyNames);
-    renderMedalsPodium(medalsRanking);
+    const medalsRankingWithImages = medalsRanking.map((entry) => {
+      const normalizedName = normalizeCoachName(entry.coach);
+      const image = normalizedName ? coachImages.get(normalizedName) ?? null : null;
+      return {
+        ...entry,
+        image,
+      };
+    });
+
+    renderMedalsPodium(medalsRankingWithImages);
     medalsStatusElement.textContent = `Classifica aggiornata: ${medalsRanking.length} allenatori`;
 
     // Mostra la tabella delle classifiche recenti
