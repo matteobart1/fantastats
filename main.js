@@ -193,28 +193,28 @@ function renderMedalsPodium(topCoaches) {
     goldStat.className = 'badge-stat';
     goldStat.innerHTML = `
       <div class="badge-stat-value">${coach.gold}</div>
-      <div>ORO</div>
+      <div class="badge-stat-label">ORO</div>
     `;
 
     const silverStat = document.createElement('div');
     silverStat.className = 'badge-stat';
     silverStat.innerHTML = `
       <div class="badge-stat-value">${coach.silver}</div>
-      <div>ARG</div>
+      <div class="badge-stat-label">ARG</div>
     `;
 
     const bronzeStat = document.createElement('div');
     bronzeStat.className = 'badge-stat';
     bronzeStat.innerHTML = `
       <div class="badge-stat-value">${coach.bronze}</div>
-      <div>BRON</div>
+      <div class="badge-stat-label">BRON</div>
     `;
 
     const totalStat = document.createElement('div');
     totalStat.className = 'badge-stat';
     totalStat.innerHTML = `
       <div class="badge-stat-value">${coach.total}</div>
-      <div>TOT</div>
+      <div class="badge-stat-label">TOT</div>
     `;
 
     stats.append(goldStat, silverStat, bronzeStat, totalStat);
@@ -277,7 +277,12 @@ async function loadRankings() {
 
     // Calcola e mostra la classifica medaglie
     const medalsRanking = calculateMedals(payload, keyNames);
-    renderMedalsPodium(medalsRanking);
+    const medalsRankingWithImages = medalsRanking.map((entry) => ({
+      ...entry,
+      image: coachImages?.[entry.coach] ?? null,
+    }));
+
+    renderMedalsPodium(medalsRankingWithImages);
     medalsStatusElement.textContent = `Classifica aggiornata: ${medalsRanking.length} allenatori`;
 
     // Mostra la tabella delle classifiche recenti
