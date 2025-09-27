@@ -1,10 +1,12 @@
 const API_URL =
   'https://script.google.com/macros/s/AKfycbyHO0wtuSv8sjG_zASC1scEy5WnBDFtig3yh6vE3eOrlsMgMpDSNfdWrE66_qlB5xZs/exec';
 
-const statusElement = document.querySelector('[data-status]');
+const statusElement = document.querySelector('#status');
 const medalsStatusElement = document.querySelector('#medals-status');
 const rankingsTable = document.querySelector('#rankings');
 const tableBody = rankingsTable?.querySelector('tbody') ?? null;
+const medalsTable = document.querySelector('#medals-table');
+const medalsTableBody = medalsTable?.querySelector('tbody') ?? null;
 const medalsPodium = document.querySelector('#medals-podium');
 const updatedAtContainer = document.querySelector('#updated-at');
 const updatedAtTime = updatedAtContainer?.querySelector('time');
@@ -173,6 +175,8 @@ function calculateMedals(payload, keyNames) {
 }
 
 function renderMedalsPodium(topCoaches) {
+  if (!medalsPodium) return;
+
   medalsPodium.innerHTML = '';
 
   const positions = [
@@ -248,6 +252,47 @@ function renderMedalsPodium(topCoaches) {
     card.append(badgeBg, coachImg, badgeContent);
     medalsPodium.append(card);
   });
+}
+
+function renderMedalsTable(entries) {
+  if (!medalsTableBody) return;
+
+  if (!entries.length) {
+    const emptyRow = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 5;
+    cell.dataset.empty = 'true';
+    cell.textContent = 'Nessun dato disponibile al momento.';
+    emptyRow.append(cell);
+    medalsTableBody.replaceChildren(emptyRow);
+    return;
+  }
+
+  const rows = entries.map((coach) => {
+    const row = document.createElement('tr');
+
+    const cells = [
+      {
+        label: 'Allenatore',
+        value: normalizeValue(coach.coach) || 'Allenatore da definire',
+      },
+      { label: 'Oro', value: coach.gold },
+      { label: 'Argento', value: coach.silver },
+      { label: 'Bronzo', value: coach.bronze },
+      { label: 'Totali', value: coach.total },
+    ];
+
+    cells.forEach(({ label, value }) => {
+      const cell = document.createElement('td');
+      cell.dataset.label = label;
+      cell.textContent = `${value}`;
+      row.append(cell);
+    });
+
+    return row;
+  });
+
+  medalsTableBody.replaceChildren(...rows);
 }
 
 async function loadCoachImages() {
@@ -328,9 +373,13 @@ async function loadCoachImages() {
 
 async function loadRankings() {
   try {
-    statusElement.textContent = 'Caricamento in corso…';
-    medalsStatusElement.textContent = 'Caricamento in corso…';
-    
+    if (statusElement) {
+      statusElement.textContent = 'Caricamento in corso…';
+    }
+    if (medalsStatusElement) {
+      medalsStatusElement.textContent = 'Caricamento in corso…';
+    }
+
     // Carica i dati del podio e le immagini in parallelo
     const [podioResponse, coachImages] = await Promise.all([
       fetch(API_URL),
@@ -343,8 +392,13 @@ async function loadRankings() {
 
     const payload = await podioResponse.json();
     if (!Array.isArray(payload) || payload.length === 0) {
-      statusElement.textContent = 'Nessun dato disponibile al momento.';
-      medalsStatusElement.textContent = 'Nessun dato disponibile al momento.';
+      if (statusElement) {
+        statusElement.textContent = 'Nessun dato disponibile al momento.';
+      }
+      if (medalsStatusElement) {
+        medalsStatusElement.textContent = 'Nessun dato disponibile al momento.';
+      }
+      renderMedalsTable([]);
       return;
     }
 
@@ -358,8 +412,13 @@ async function loadRankings() {
 
     if (!keyNames.season || !keyNames.position || !keyNames.coach || !keyNames.team) {
       const errorMsg = 'Formato dati inatteso: controlla le intestazioni del foglio.';
-      statusElement.textContent = errorMsg;
-      medalsStatusElement.textContent = errorMsg;
+      if (statusElement) {
+        statusElement.textContent = errorMsg;
+      }
+      if (medalsStatusElement) {
+        medalsStatusElement.textContent = errorMsg;
+      }
+      renderMedalsTable([]);
       return;
     }
 
@@ -376,20 +435,29 @@ async function loadRankings() {
     });
 
     renderMedalsPodium(medalsRankingWithImages);
-    medalsStatusElement.textContent = `Classifica aggiornata: ${medalsRanking.length} allenatori`;
+    renderMedalsTable(medalsRanking);
+    if (medalsStatusElement) {
+      medalsStatusElement.textContent = `Classifica aggiornata: ${medalsRanking.length} allenatori`;
+    }
 
     // Mostra la tabella delle classifiche recenti
-    const sorted = [...payload].sort((a, b) =>
-      parseYear(b[keyNames.season]) - parseYear(a[keyNames.season]) ||
-      parseInt(a[keyNames.position], 10) - parseInt(b[keyNames.position], 10)
-    );
+    if (tableBody) {
+      const sorted = [...payload].sort((a, b) =>
+        parseYear(b[keyNames.season]) - parseYear(a[keyNames.season]) ||
+        parseInt(a[keyNames.position], 10) - parseInt(b[keyNames.position], 10)
+      );
 
-    tableBody.replaceChildren(...sorted.map((record) => renderRow(record, keyNames)));
-    statusElement.textContent = `Totale stagioni registrate: ${new Set(
-      sorted.map((record) => normalizeValue(record[keyNames.season]))
-    ).size}`;
+      tableBody.replaceChildren(...sorted.map((record) => renderRow(record, keyNames)));
+      if (statusElement) {
+        statusElement.textContent = `Totale stagioni registrate: ${new Set(
+          sorted.map((record) => normalizeValue(record[keyNames.season]))
+        ).size}`;
+      }
+    } else if (statusElement) {
+      statusElement.textContent = `Allenatori con almeno una medaglia: ${medalsRanking.length}`;
+    }
 
-    if (updatedAtTime) {
+    if (updatedAtTime && updatedAtContainer) {
       const now = new Date();
       updatedAtTime.dateTime = now.toISOString();
       updatedAtTime.textContent = new Intl.DateTimeFormat('it-IT', {
@@ -401,11 +469,18 @@ async function loadRankings() {
   } catch (error) {
     console.error(error);
     const errorMsg = 'Impossibile recuperare i dati. Riprova tra qualche minuto.';
-    statusElement.textContent = errorMsg;
-    medalsStatusElement.textContent = errorMsg;
+    if (statusElement) {
+      statusElement.textContent = errorMsg;
+    }
+    if (medalsStatusElement) {
+      medalsStatusElement.textContent = errorMsg;
+    }
+    renderMedalsTable([]);
   }
 }
 
-if (statusElement && medalsStatusElement && medalsPodium && tableBody) {
+const shouldLoadData = Boolean(medalsPodium || medalsTableBody || tableBody);
+
+if (shouldLoadData) {
   loadRankings();
 }
