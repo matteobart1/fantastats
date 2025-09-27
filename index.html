@@ -31,6 +31,39 @@
           stagioni.
         </p>
       </section>
+
+      <section class="card">
+        <header class="card__header">
+          <h2>Classifica Allenatori per Medaglie</h2>
+          <p id="medals-status" data-status class="status">Caricamento in corso…</p>
+        </header>
+
+        <div id="medals-podium" class="podium">
+          <!-- I primi 3 allenatori verranno inseriti qui -->
+        </div>
+      </section>
+
+      <section class="card">
+        <header class="card__header">
+          <h2>Dettaglio medaglie</h2>
+          <p id="status" data-status class="status">Caricamento in corso…</p>
+        </header>
+
+        <div class="table-wrapper">
+          <table id="medals-table" aria-describedby="status">
+            <thead>
+              <tr>
+                <th scope="col">Allenatore</th>
+                <th scope="col">Oro</th>
+                <th scope="col">Argento</th>
+                <th scope="col">Bronzo</th>
+                <th scope="col">Totali</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
     </main>
 
     <footer class="page-footer">
@@ -38,5 +71,7 @@
         <p>Dati aggiornati dal foglio Google condiviso tra i partecipanti.</p>
       </div>
     </footer>
+
+    <script src="main.js" type="module"></script>
   </body>
 </html>
