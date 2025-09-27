@@ -3,7 +3,8 @@ const API_URL =
 
 const statusElement = document.querySelector('[data-status]');
 const medalsStatusElement = document.querySelector('#medals-status');
-const tableBody = document.querySelector('#rankings tbody');
+const rankingsTable = document.querySelector('#rankings');
+const tableBody = rankingsTable?.querySelector('tbody') ?? null;
 const medalsPodium = document.querySelector('#medals-podium');
 const updatedAtContainer = document.querySelector('#updated-at');
 const updatedAtTime = updatedAtContainer?.querySelector('time');
@@ -405,4 +406,6 @@ async function loadRankings() {
   }
 }
 
-loadRankings();
+if (statusElement && medalsStatusElement && medalsPodium && tableBody) {
+  loadRankings();
+}
