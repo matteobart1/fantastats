@@ -133,7 +133,7 @@ body {
 .coach-photo {
   position: absolute;
   left: 50%;
-  bottom: 45%;
+  bottom: 46%;
   transform: translateX(-50%);
   width: 60%;
   object-fit: cover;
