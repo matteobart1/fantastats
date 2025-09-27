@@ -127,29 +127,42 @@ function calculateMedals(payload, keyNames) {
   const coachStats = new Map();
 
   payload.forEach((record) => {
-    const coach = normalizeValue(record[keyNames.coach]);
+    const coachRaw = record[keyNames.coach];
+    const coach = normalizeValue(coachRaw);
+    const normalizedCoach = normalizeCoachName(coachRaw);
     const position = normalizeValue(record[keyNames.position]);
-    
-    if (!coach || !position) return;
+
+    if (!normalizedCoach || !position) return;
 
     const pos = parseInt(position, 10);
-    if (pos < 1 || pos > 3) return;
+    if (!Number.isInteger(pos) || pos < 1 || pos > 3) return;
 
-    if (!coachStats.has(coach)) {
-      coachStats.set(coach, { gold: 0, silver: 0, bronze: 0, total: 0 });
+    if (!coachStats.has(normalizedCoach)) {
+      coachStats.set(normalizedCoach, {
+        coach,
+        gold: 0,
+        silver: 0,
+        bronze: 0,
+        total: 0,
+      });
     }
 
-    const stats = coachStats.get(coach);
+    const stats = coachStats.get(normalizedCoach);
+
+    // Aggiorna il nome visualizzato privilegiando la variante più lunga,
+    // così da mantenere eventuali soprannomi o formattazioni utili.
+    if (coach && (!stats.coach || coach.length > stats.coach.length)) {
+      stats.coach = coach;
+    }
+
     if (pos === 1) stats.gold++;
     else if (pos === 2) stats.silver++;
     else if (pos === 3) stats.bronze++;
-    
+
     stats.total = stats.gold + stats.silver + stats.bronze;
   });
 
-  return Array.from(coachStats.entries())
-    .map(([coach, stats]) => ({ coach, ...stats }))
-    .sort((a, b) => {
+  return Array.from(coachStats.values()).sort((a, b) => {
       // Ordina per: oro, argento, bronzo, totale
       if (a.gold !== b.gold) return b.gold - a.gold;
       if (a.silver !== b.silver) return b.silver - a.silver;
@@ -244,13 +257,68 @@ async function loadCoachImages() {
       return new Map();
     }
     const data = await response.json();
-    return Object.entries(data ?? {}).reduce((map, [name, url]) => {
-      const key = normalizeCoachName(name);
-      if (key) {
+    const map = new Map();
+
+    const registerImage = (nameCandidate, urlCandidate) => {
+      const key = normalizeCoachName(nameCandidate);
+      const url = normalizeValue(urlCandidate);
+      if (key && url) {
         map.set(key, url);
       }
-      return map;
-    }, new Map());
+    };
+
+    if (Array.isArray(data)) {
+      data.forEach((item) => {
+        if (!item || typeof item !== 'object') return;
+        const nameCandidate =
+          item.coach ??
+          item.Coach ??
+          item.allenatore ??
+          item.Allenatore ??
+          item['Allenatore'] ??
+          item['Allenatore 1'] ??
+          item['Nome'] ??
+          item['Name'];
+
+        const urlCandidate =
+          item.image ??
+          item.Image ??
+          item.immagine ??
+          item.Immagine ??
+          item.foto ??
+          item.Foto ??
+          item.photo ??
+          item.Photo ??
+          item.url ??
+          item.URL ??
+          item.link ??
+          item.Link;
+
+        registerImage(nameCandidate, urlCandidate);
+      });
+    } else if (data && typeof data === 'object') {
+      Object.entries(data).forEach(([name, value]) => {
+        if (typeof value === 'string') {
+          registerImage(name, value);
+          return;
+        }
+
+        if (value && typeof value === 'object') {
+          const urlCandidate =
+            value.url ??
+            value.URL ??
+            value.image ??
+            value.Image ??
+            value.immagine ??
+            value.Immagine ??
+            value.link ??
+            value.Link;
+          registerImage(name, urlCandidate);
+        }
+      });
+    }
+
+    return map;
   } catch (error) {
     console.warn('Errore nel caricamento delle immagini:', error);
     return new Map();
