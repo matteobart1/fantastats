@@ -15,8 +15,31 @@
   <body>
     <header class="page-header">
       <div class="container">
-        <h1>Fantastats</h1>
-        <p class="subtitle">Albo d'oro del nostro fantacalcio</p>
+        <div class="page-header__inner">
+          <div class="page-header__brand">
+            <h1><a href="index.html">Fantastats</a></h1>
+            <p class="subtitle">Albo d'oro del nostro fantacalcio</p>
+          </div>
+          <input
+            type="checkbox"
+            id="nav-toggle"
+            class="nav-toggle"
+            aria-label="Apri o chiudi il menu di navigazione"
+            aria-controls="main-navigation"
+          />
+          <label class="nav-toggle__button" for="nav-toggle">
+            <span class="sr-only">Menu</span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </label>
+          <nav class="main-nav" id="main-navigation">
+            <ul class="main-nav__list">
+              <li><a class="main-nav__link main-nav__link--active" href="index.html">Home</a></li>
+              <li><a class="main-nav__link" href="classifiche.html">Classifiche recenti</a></li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
 
