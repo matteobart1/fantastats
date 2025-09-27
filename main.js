@@ -1,5 +1,5 @@
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzuDy-H0CMkaET-DgVVSRkDTDnJhTQPIhXoLhYSMJaxAqxYTHZ9DezAF-ltoRdC7M6x/exec';
+  'https://script.google.com/macros/s/AKfycbyHO0wtuSv8sjG_zASC1scEy5WnBDFtig3yh6vE3eOrlsMgMpDSNfdWrE66_qlB5xZs/exec';
 
 const statusElement = document.querySelector('[data-status]');
 const medalsStatusElement = document.querySelector('#medals-status');
