@@ -133,14 +133,11 @@ body {
 .coach-photo {
   position: absolute;
   left: 50%;
-  top: 32%;
-  transform: translate(-50%, -50%);
-  width: 56%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  overflow: hidden;
+  bottom: 45%;
+  transform: translateX(-50%);
+  width: 60%;
   object-fit: cover;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 4px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.22);
 }
 
 /* Testo sovrapposto sui badge - parte bassa */
@@ -339,8 +336,9 @@ td:first-child {
   }
 
   .coach-photo {
-    top: 34%;
-    width: 60%;
+    bottom: 45%;
+    transform: translateX(-50%);
+    width: 66%;
   }
 
   .badge-content {
